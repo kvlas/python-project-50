@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import json
+import yaml
 
 import argparse
 
@@ -17,8 +18,12 @@ def main():
     print(diff)
 
 def generate_diff(file_path1, file_path2):
-    file1 = json.load(open(file_path1))
-    file2 = json.load(open(file_path2))
+    if file_path1.split(".")[-1] == json:
+        file1 = json.load(open(file_path1))
+        file2 = json.load(open(file_path2))
+    else:
+        file1 = yaml.safe_load(open(file_path1))
+        file2 = yaml.safe_load(open(file_path2))
     return dict_diff(file1, file2)
 
 

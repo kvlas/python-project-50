@@ -43,10 +43,14 @@ def gen_dict_diff(d1, d2):
     return diff
 
 def format_dict(diff, format):
-    def stylish():
-        return "stylish format must be here"
-    def json_format():
-        return "stylish format must be here"
+    def stylish(d):
+        return json.dumps(d, separators=(('', ': ')) , indent = 1).replace('"', '')
+
+        
+    def json_format(d):
+        return json.dumps(d)
+    
+
     def plain(d, path=None, result=None):
         if path is None:
             path = ''
@@ -56,30 +60,34 @@ def format_dict(diff, format):
             current_path = path + key + '.'
             if d.get(key)['nested'] == True:
                 if d.get(key)['type'] == 'added':
-                    result.append(('Property ' + current_path + ' was added with value: [complex value]'))
+                    result.append(('Property ' + current_path[:-1] + ' was added with value: [complex value]'))
                 elif d.get(key)['type'] == 'removed':
-                    result.append(('Property ' + current_path + ' was removed'))
+                    result.append(('Property ' + current_path[:-1] + ' was removed'))
                 elif d.get(key)['type'] == 'changed':
                     pass
                 else:
                     plain(d.get(key)['value'], current_path, result)
             else:
                 if d.get(key)['type'] == 'added':
-                    result.append(('Property ' + current_path + ' was added with value: ' + parse_value(d.get(key)['value'])))
+                    result.append(('Property ' + current_path[:-1] + ' was added with value: ' + parse_value(d.get(key)['value'])))
                 elif d.get(key)['type'] == 'removed':
-                    result.append(('Property ' + current_path + ' was removed'))
+                    result.append(('Property ' + current_path[:-1] + ' was removed'))
                 elif d.get(key)['type'] == 'changed':
-                    result.append(('Property ' + current_path + ' was updated. From ' + parse_value(d.get(key)['value']['removed']) + ' to ' + parse_value(d.get(key)['value']['added'])))
+                    result.append(('Property ' + current_path[:-1] + ' was updated. From ' + parse_value(d.get(key)['value']['removed']) + ' to ' + parse_value(d.get(key)['value']['added'])))
                 else:
                     pass
         delim = "\n"   
         view = delim.join(map(str, result))
         return view
 
+
     if format == 'plain':
-        return plain(diff)
+        view = plain(diff)
+    elif format == 'json':
+        view = json_format(diff)
     else:
-        return "VSE PLOHO"
+        view = stylish(diff)
+    return view
 
 def parse_value(val):
     if type(val) is bool:

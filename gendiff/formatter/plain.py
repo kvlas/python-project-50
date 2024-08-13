@@ -1,3 +1,5 @@
+import json
+
 def format_plain(d, path=None, result=None):
     if path is None:
         path = ''
@@ -7,35 +9,30 @@ def format_plain(d, path=None, result=None):
         current_path = path + key + '.'
         if d.get(key)['nested'] == True:
             if d.get(key)['type'] == 'added':
-                result.append(('Property ' + current_path[:-1] + ' was added with value: [complex value]'))
+                result.append((f"Property {current_path[:-1]} was added with value: {parse_value(d.get(key)['value'])}"))
             elif d.get(key)['type'] == 'removed':
-                result.append(('Property ' + current_path[:-1] + ' was removed'))
-            elif d.get(key)['type'] == 'changed':
-                pass
+                result.append((f"Property {current_path[:-1]} was removed"))
             else:
                 format_plain(d.get(key)['value'], current_path, result)
         else:
             if d.get(key)['type'] == 'added':
-                result.append(('Property ' + current_path[:-1] + ' was added with value: ' + parse_value(d.get(key)['value'])))
+                result.append((f"Property {current_path[:-1]} was added with value: {parse_value(d.get(key)['value'])}"))
             elif d.get(key)['type'] == 'removed':
-                result.append(('Property ' + current_path[:-1] + ' was removed'))
+                result.append((f"Property {current_path[:-1]} was removed"))
             elif d.get(key)['type'] == 'changed':
-                result.append(('Property ' + current_path[:-1] + ' was updated. From ' + parse_value(d.get(key)['value']['removed']) + ' to ' + parse_value(d.get(key)['value']['added'])))
+                result.append((f"Property {current_path[:-1]} was updated. From {parse_value(d.get(key)['value']['removed'])} to {parse_value(d.get(key)['value']['added'])}"))
             else:
                 pass
     delim = "\n"   
     view = delim.join(map(str, result))
     return view
 
-def parse_value(val):
-    if type(val) is bool:
-        new_val = str(val).lower()
-    elif type(val) is str:
-        new_val = "'" + val + "'"
-    elif val is None:
-        new_val = 'null'
-    elif type(val) is dict:
-        new_val = '[complex value]'
+def parse_value(value):
+    if isinstance(value, bool) or value is None:
+        return json.dumps(value)
+    elif isinstance(value, dict):
+        return '[complex value]'
+    elif isinstance(value, int):
+        return value
     else:
-        new_val = str(val)
-    return new_val
+        return f"'{value}'"

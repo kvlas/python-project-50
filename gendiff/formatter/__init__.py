@@ -10,6 +10,6 @@ formaters = {
 
 def formatter(format):
     if format not in formaters:
-        raise TypeError('Wrong format!')
+        raise TypeError('Unsupported output format.')
 
     return formaters[format]

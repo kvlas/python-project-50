@@ -1,14 +1,12 @@
 # Makefile
-install: # deps install
-	poetry install
-
-test:
-	poetry run pytest
-
 lint: #project linter check
 	poetry run flake8 gendiff
 
+install: # deps install
+	poetry install
+
 build: # Build project
+	rm -f ./dist/*
 	poetry build
 
 publish: # Publish package
@@ -19,3 +17,9 @@ package-install: # Install package
 
 gendiff: # Run project
 	poetry run gendiff
+
+test:
+	poetry run pytest
+
+test-coverage:
+	poetry run pytest --cov=gendiff --cov-report xml

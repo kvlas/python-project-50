@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 import argparse
-from gendiff.dict_diff import *
+from gendiff.find_diff import *
+
 
 def main():
     # Parser init
@@ -12,9 +13,8 @@ def main():
     parser.add_argument('-f', '--format', required=False, default='plain', choices=['stylish', 'plain', 'json'], type=str, help='set format of output')
 
     args = parser.parse_args()
-    diff = gen_diff(args.first_file, args.second_file, args.format)
+    diff = generate_diff(args.first_file, args.second_file, args.format)
     return diff
 
 if __name__ == "__main__":
     main()
-

@@ -1,42 +1,31 @@
-import json
-import yaml
-
 from gendiff.formatter import formatter
-
-def file_importer(path_to_file):
-    format = path_to_file.split(".")[-1]
-    if format == 'json':
-        return json.load(open(path_to_file))
-    elif format in ['yaml', 'yml']:
-        return yaml.safe_load(open(path_to_file))
-    else:
-        print('NE TOT FORMAT')
+from gendiff.importer import import_file
 
 
-def gen_diff(file1_path, file2_path, format):
-    file1 = file_importer(file1_path)
-    file2 = file_importer(file2_path)
-    diff = gen_dict_diff(file1, file2)
+def generate_diff(file1_path, file2_path, format):
+    file1 = import_file(file1_path)
+    file2 = import_file(file2_path)
+    diff = compare_dict(file1, file2)
     return formatter(format)(diff)
 
 
-def gen_dict_diff(d1, d2):
+def compare_dict(d1, d2):
     keys = d1.keys() | d2.keys()
     diff = {}
     for key in sorted(keys): 
         if key in (d1.keys() - d2.keys()):
             if isinstance(d1.get(key), dict):
-                diff[key] = {"type": "removed", "nested": True, "value": gen_dict_diff(d1.get(key), {})} #nested
+                diff[key] = {"type": "removed", "nested": True, "value": compare_dict(d1.get(key), {})} #nested
             else:
                 diff[key] = {"type": "removed","nested": False, "value": d1.get(key)}
         elif key in (d2.keys() - d1.keys()):
             if isinstance(d2.get(key), dict):
-                diff[key] = {"type": "added","nested": True, "value": gen_dict_diff({}, d2.get(key))} #nested
+                diff[key] = {"type": "added","nested": True, "value": compare_dict({}, d2.get(key))} #nested
             else:         
                 diff[key] = {"type": "added","nested": False, "value": d2.get(key)}
         elif key in d1.keys() & d2.keys():
             if isinstance(d1.get(key), dict) and isinstance(d2.get(key), dict):
-                diff[key] = {"type": "unchanged", "nested": True, "value": gen_dict_diff(d1.get(key), d2.get(key))} #nested
+                diff[key] = {"type": "unchanged", "nested": True, "value": compare_dict(d1.get(key), d2.get(key))} #nested
             else:
                 if d1.get(key) == d2.get(key):
                     diff[key] = {"type": "unchanged", "nested": False, "value": d1.get(key)}

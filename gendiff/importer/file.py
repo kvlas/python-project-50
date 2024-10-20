@@ -1,6 +1,7 @@
 import json
 import yaml
 
+
 def import_file(path_to_file):
     format = path_to_file.split(".")[-1]
     if format == 'json':

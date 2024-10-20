@@ -1,6 +1,7 @@
 def format_stylish(diff, depth=0):
     return iter_diff(diff, depth)
 
+
 def iter_diff(diff, depth):
     INDENT_SIZE = 4
     INDENT = ' '
@@ -43,6 +44,7 @@ def iter_diff(diff, depth):
     lines.append(f"{closing_indent}}}")
     return '\n'.join(lines)
 
+
 def format_value(value, depth):
     INDENT_SIZE = 4
     INDENT = ' '
@@ -63,6 +65,7 @@ def format_value(value, depth):
     else:
         return stringify_value(value)
 
+
 def stringify_value(value):
     if isinstance(value, bool):
         return str(value).lower()
@@ -70,6 +73,7 @@ def stringify_value(value):
         return 'null'
     else:
         return str(value)
+
 
 def is_diff_node(node):
     return isinstance(node, dict) and 'type' in node and 'value' in node

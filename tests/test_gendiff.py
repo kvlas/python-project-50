@@ -21,7 +21,7 @@ COMPLEX_JSON = 'tests/fixtures/json2.txt'
 def test_default_format():
     assert (generate_diff(JSON_COMPLEX_1,
                           JSON_COMPLEX_2) == generate_diff(
-        JSON_COMPLEX_1, JSON_COMPLEX_2, 'plain'))
+        JSON_COMPLEX_1, JSON_COMPLEX_2, 'stylish'))
 
 
 def test_unsupported_format():

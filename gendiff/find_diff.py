@@ -2,7 +2,7 @@ from gendiff.formatter import formatter
 from gendiff.importer import import_file
 
 
-def generate_diff(file1_path, file2_path, format='plain'):
+def generate_diff(file1_path, file2_path, format='stylish'):
     file1 = import_file(file1_path)
     file2 = import_file(file2_path)
     diff = build_diff(file1, file2)

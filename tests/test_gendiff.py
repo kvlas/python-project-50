@@ -17,16 +17,19 @@ COMPLEX_PLAIN = 'tests/fixtures/plain2.txt'
 SIMPLE_JSON = 'tests/fixtures/json1.txt'
 COMPLEX_JSON = 'tests/fixtures/json2.txt'
 
+
 def test_default_format():
     assert (generate_diff(JSON_COMPLEX_1,
                           JSON_COMPLEX_2) == generate_diff(
         JSON_COMPLEX_1, JSON_COMPLEX_2, 'plain'))
+
 
 def test_unsupported_format():
     with pytest.raises(TypeError) as err:
         generate_diff(JSON_COMPLEX_1, JSON_COMPLEX_2, 'yaml')
 
     assert str(err.value) == 'Unsupported output format.'
+
 
 def test_unsupported_extension():
     with pytest.raises(TypeError) as err:

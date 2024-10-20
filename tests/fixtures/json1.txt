@@ -1,0 +1,1 @@
+{"follow": {"type": "removed", "nested": false, "value": false}, "host": {"type": "unchanged", "nested": false, "value": "hexlet.io"}, "proxy": {"type": "removed", "nested": false, "value": "123.234.53.22"}, "timeout": {"type": "changed", "nested": false, "value": {"removed": 50, "added": 20}}, "verbose": {"type": "added", "nested": false, "value": true}}

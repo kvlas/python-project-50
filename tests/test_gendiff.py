@@ -44,24 +44,21 @@ def read_file(format):
 
 @pytest.mark.parametrize('first_file, second_file, format, expected', [
     (JSON_SIMPLE_1, JSON_SIMPLE_2,
-     'json', read_file(SIMPLE_JSON),), 
+     'json', read_file(SIMPLE_JSON),),
     (JSON_COMPLEX_1, JSON_COMPLEX_2,
      'json', read_file(COMPLEX_JSON),),
     (YAML_SIMPLE_1, YAML_SIMPLE_2,
      'json', read_file(SIMPLE_JSON),),
     (JSON_SIMPLE_1, JSON_SIMPLE_2,
-     'plain', read_file(SIMPLE_PLAIN),), 
+     'plain', read_file(SIMPLE_PLAIN),),
     (JSON_COMPLEX_1, JSON_COMPLEX_2,
      'plain', read_file(COMPLEX_PLAIN),),
     (JSON_SIMPLE_1, JSON_SIMPLE_2,
-     'stylish', read_file(SIMPLE_STYLISH),), 
+     'stylish', read_file(SIMPLE_STYLISH),),
     (JSON_COMPLEX_1, JSON_COMPLEX_2,
      'stylish', read_file(COMPLEX_STYLISH),),
     (YAML_SIMPLE_1, YAML_SIMPLE_2,
-     'stylish', read_file(SIMPLE_STYLISH),),
-     ])
-
-
+     'stylish', read_file(SIMPLE_STYLISH),),])
 def test_generate_diff(first_file, second_file, format, expected):
     """Check that generate_diff output is correct."""
     assert generate_diff(first_file, second_file, format) == expected

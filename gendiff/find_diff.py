@@ -5,46 +5,104 @@ from gendiff.importer import import_file
 def generate_diff(file1_path, file2_path, format='plain'):
     file1 = import_file(file1_path)
     file2 = import_file(file2_path)
-
-    diff = compare_dict(file1, file2)
+    diff = build_diff(file1, file2)
     return formatter(format)(diff)
 
 
-def compare_dict(d1, d2):
-    keys = d1.keys() | d2.keys()
+def build_diff(d1, d2):
     diff = {}
-    for key in sorted(keys):
-        if key in (d1.keys() - d2.keys()):
-            if isinstance(d1.get(key), dict):
-                diff[key] = {"type": "removed",
-                             "nested": True,
-                             "value": compare_dict(d1.get(key), {})}
-            else:
-                diff[key] = {"type": "removed",
-                             "nested": False,
-                             "value": d1.get(key)}
-        elif key in (d2.keys() - d1.keys()):
-            if isinstance(d2.get(key), dict):
-                diff[key] = {"type": "added",
-                             "nested": True,
-                             "value": compare_dict({}, d2.get(key))}
-            else:
-                diff[key] = {"type": "added",
-                             "nested": False,
-                             "value": d2.get(key)}
-        elif key in d1.keys() & d2.keys():
-            if isinstance(d1.get(key), dict) and isinstance(d2.get(key), dict):
-                diff[key] = {"type": "unchanged",
-                             "nested": True,
-                             "value": compare_dict(d1.get(key), d2.get(key))}
-            else:
-                if d1.get(key) == d2.get(key):
-                    diff[key] = {"type": "unchanged",
-                                 "nested": False,
-                                 "value": d1.get(key)}
-                else:
-                    diff[key] = {"type": "changed",
-                                 "nested": False,
-                                 "value": {"removed": d1.get(key),
-                                           "added": d2.get(key)}}
+    all_keys = get_all_keys(d1, d2)
+    for key in sorted(all_keys):
+        diff[key] = get_diff_node(key, d1, d2)
     return diff
+
+
+def get_all_keys(d1, d2):
+    if not isinstance(d1, dict) or not isinstance(d2, dict):
+        raise TypeError("Expected dictionaries in get_all_keys.")
+    return d1.keys() | d2.keys()
+
+
+def get_diff_node(key, d1, d2):
+    val1 = d1.get(key)
+    val2 = d2.get(key)
+
+    if key not in d1:
+        return create_added_node(val2)
+    elif key not in d2:
+        return create_removed_node(val1)
+    else:
+        if is_both_dict(val1, val2):
+            return create_nested_node(build_diff(val1, val2))
+        elif val1 == val2:
+            return create_unchanged_node(val1)
+        else:
+            return create_changed_node(val1, val2)
+
+
+def is_both_dict(val1, val2):
+    return isinstance(val1, dict) and isinstance(val2, dict)
+
+
+def create_added_node(value):
+    if isinstance(value, dict):
+        return {
+            "type": "added",
+            "nested": True,
+            "value": build_diff({}, value)
+        }
+    else:
+        return {
+            "type": "added",
+            "nested": False,
+            "value": value
+        }
+
+
+def create_removed_node(value):
+    if isinstance(value, dict):
+        return {
+            "type": "removed",
+            "nested": True,
+            "value": build_diff(value, {})
+        }
+    else:
+        return {
+            "type": "removed",
+            "nested": False,
+            "value": value
+        }
+
+
+def create_unchanged_node(value):
+    if not isinstance(value, dict):
+        return {
+            "type": "unchanged",
+            "nested": isinstance(value, dict),
+            "value": value
+        }
+    else:
+        return {
+            "type": "unchanged",
+            "nested": isinstance(value, dict),
+            "value": build_diff(value, value)
+        }
+
+
+def create_changed_node(val1, val2):
+    return {
+        "type": "changed",
+        "nested": False,
+        "value": {
+            "removed": val1,
+            "added": val2
+        }
+    }
+
+
+def create_nested_node(value):
+    return {
+        "type": "unchanged",
+        "nested": True,
+        "value": value
+    }

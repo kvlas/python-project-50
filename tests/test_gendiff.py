@@ -49,7 +49,11 @@ def read_file(format):
     (JSON_SIMPLE_1, JSON_SIMPLE_2,
      'plain', read_file(SIMPLE_PLAIN),), 
     (JSON_COMPLEX_1, JSON_COMPLEX_2,
-     'plain', read_file(COMPLEX_PLAIN),)
+     'plain', read_file(COMPLEX_PLAIN),),
+    (JSON_SIMPLE_1, JSON_SIMPLE_2,
+     'stylish', read_file(SIMPLE_STYLISH),), 
+    (JSON_COMPLEX_1, JSON_COMPLEX_2,
+     'stylish', read_file(COMPLEX_STYLISH),),
      ])
 def test_generate_diff(first_file, second_file, format, expected):
     """Check that generate_diff output is correct."""

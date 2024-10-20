@@ -57,6 +57,8 @@ def read_file(format):
      'stylish', read_file(SIMPLE_STYLISH),), 
     (JSON_COMPLEX_1, JSON_COMPLEX_2,
      'stylish', read_file(COMPLEX_STYLISH),),
+    (YAML_SIMPLE_1, YAML_SIMPLE_2,
+     'stylish', read_file(SIMPLE_STYLISH),),
      ])
 
 

@@ -24,10 +24,10 @@ def process_node(node, current_path, result):
 def process_nested_node(node, current_path, result):
     node_type = node.get('type')
     if node_type == 'added':
-        message = format_added(current_path, node.get('value'))
+        message = f"Property '{current_path}' was added with value: {parse_value(node.get('value'))}"
         result.append(message)
     elif node_type == 'removed':
-        message = format_removed(current_path)
+        message = f"Property '{current_path}' was removed"
         result.append(message)
     else:
         build_plain_format(node.get('value'), f"{current_path}.", result)
@@ -36,22 +36,14 @@ def process_nested_node(node, current_path, result):
 def process_leaf_node(node, current_path, result):
     node_type = node.get('type')
     if node_type == 'added':
-        message = format_added(current_path, node.get('value'))
+        message = f"Property '{current_path}' was added with value: {parse_value(node.get('value'))}"
         result.append(message)
     elif node_type == 'removed':
-        message = format_removed(current_path)
+        message = f"Property '{current_path}' was removed"
         result.append(message)
     elif node_type == 'changed':
         message = format_changed(current_path, node.get('value'))
         result.append(message)
-
-
-def format_added(path, value):
-    return f"Property '{path}' was added with value: {parse_value(value)}"
-
-
-def format_removed(path):
-    return f"Property '{path}' was removed"
 
 
 def format_changed(path, value):

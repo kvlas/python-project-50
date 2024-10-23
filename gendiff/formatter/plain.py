@@ -24,9 +24,11 @@ def process_node(node, current_path, result):
 def process_nested_node(node, current_path, result):
     node_type = node.get('type')
     if node_type == 'added':
-        handle_added_node(current_path, node.get('value'), result)
+        message = format_added(current_path, node.get('value'))
+        result.append(message)
     elif node_type == 'removed':
-        handle_removed_node(current_path, result)
+        message = format_removed(current_path)
+        result.append(message)
     else:
         build_plain_format(node.get('value'), f"{current_path}.", result)
 
@@ -34,26 +36,14 @@ def process_nested_node(node, current_path, result):
 def process_leaf_node(node, current_path, result):
     node_type = node.get('type')
     if node_type == 'added':
-        handle_added_node(current_path, node.get('value'), result)
+        message = format_added(current_path, node.get('value'))
+        result.append(message)
     elif node_type == 'removed':
-        handle_removed_node(current_path, result)
+        message = format_removed(current_path)
+        result.append(message)
     elif node_type == 'changed':
-        handle_changed_node(current_path, node.get('value'), result)
-
-
-def handle_added_node(current_path, value, result):
-    message = format_added(current_path, value)
-    result.append(message)
-
-
-def handle_removed_node(current_path, result):
-    message = format_removed(current_path)
-    result.append(message)
-
-
-def handle_changed_node(current_path, value, result):
-    message = format_changed(current_path, value)
-    result.append(message)
+        message = format_changed(current_path, node.get('value'))
+        result.append(message)
 
 
 def format_added(path, value):

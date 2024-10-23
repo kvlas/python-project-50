@@ -36,16 +36,12 @@ def get_diff_node(key, d1, d2):
     elif key not in d2:
         return create_removed_node(val1)
     else:
-        if is_both_dict(val1, val2):
+        if isinstance(val1, dict) and isinstance(val2, dict):
             return create_nested_node(build_diff(val1, val2))
         elif val1 == val2:
             return create_unchanged_node(val1)
         else:
             return create_changed_node(val1, val2)
-
-
-def is_both_dict(val1, val2):
-    return isinstance(val1, dict) and isinstance(val2, dict)
 
 
 def create_added_node(value):
